@@ -20,3 +20,6 @@ pip install markdown       # Markdown support for the browsable API.
 pip install django-filter  # Filtering support
 
 django-admin startproject config .
+
+for creating migrations
+python manage.py makemigrations accounts
