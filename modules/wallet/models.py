@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+class Wallet(models.Model):
+    balance = models.BigIntegerField(default=0)
+    pass
+
