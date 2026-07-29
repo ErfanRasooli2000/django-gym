@@ -9,7 +9,7 @@ class Transaction(models.Model):
 
     wallet_id = models.OneToOneField(Wallet , on_delete=models.CASCADE)
     amount = models.BigIntegerField(default=0)
-    category = models.TextChoices(choices=TransactionCategory.choices)
-    type = models.CharField(choices=TransactionType.choices)
+    category = models.CharField(choices=TransactionCategory.choices , max_length=15)
+    type = models.CharField(choices=TransactionType.choices , max_length=15)
     balance_before = models.BigIntegerField(default=0)
     balance_after = models.BigIntegerField(default=0)

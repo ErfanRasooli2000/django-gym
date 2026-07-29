@@ -11,6 +11,8 @@ from ..wallet.models import Wallet
 class User(AbstractUser):
     REQUIRED_FIELDS = ["phone_number" , "email"]
 
+    first_name = models.CharField(max_length = 30 , null = False)
+    last_name = models.CharField(max_length = 70 , null = False)
     phone_number = models.CharField(max_length=11, unique=True , validators=[iranian_mobile_validator])
     gender = models.CharField(choices=Gender.choices, max_length=10, blank=True)
     birth_date = models.DateField(null=True, blank=True)

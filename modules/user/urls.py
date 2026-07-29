@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
+from .views import ListCreateApiView, RetrieveUpdateDestroyApiView
 
 urlpatterns = [
-    path("/create" , views.create, name="create_user"),
+    path("" , ListCreateApiView.as_view()),
+    path("<int:pk>" , RetrieveUpdateDestroyApiView.as_view()),
 ]

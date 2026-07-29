@@ -15,9 +15,14 @@ first commands:
 python -m venv .venv
 source .venv/bin/activate
 
+sudo apt-get install python3-dev default-libmysqlclient-dev build-essential
+
 pip install djangorestframework
 pip install markdown       # Markdown support for the browsable API.
 pip install django-filter  # Filtering support
+pip install python-dotenv
+pip install mysqlclient
+
 
 django-admin startproject config .
 
