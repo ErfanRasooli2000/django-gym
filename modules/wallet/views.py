@@ -1,22 +1,52 @@
-import json
+from rest_framework import status
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import authentication_classes, api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .serializers import WalletTransactionSerializer, TransferSerializer
+from .services import transfer_wallet
 
-from django.http import JsonResponse
-from django.shortcuts import render
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def balance(request):
 
-# Create your views here.
-def api_home(request):
+    wallet = request.user.wallet
 
-    body = request.body
-    data = {}
+    if wallet is None:
+        return Response({"message": "User Wallet Not Found"}, status=status.HTTP_404_NOT_FOUND)
 
-    try:
-        data = json.loads(body)
-    except:
-        print("Wrong format")
+    return Response({"balance": wallet.balance}, status=status.HTTP_200_OK)
 
-    print(data.keys())
-    print(request.headers)
-    return JsonResponse(data)
-    return JsonResponse(data)
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def transactions(request):
 
-    return JsonResponse({'message': 'Welcome to Wallet!'})
+    wallet = request.user.wallet
+
+    if wallet is None:
+        return Response({"message": "User Wallet Not Found"}, status=status.HTTP_404_NOT_FOUND)
+
+    data = wallet.transactions.order_by("-created_at")
+    result = WalletTransactionSerializer(data, many=True).data
+
+    return Response(result)
+
+
+@api_view(["POST"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def transfer(request):
+
+    wallet = request.user.wallet
+
+    if wallet is None:
+        return Response({"message": "User Wallet Not Found"}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = TransferSerializer(data=request.data , context={"request": request})
+    serializer.is_valid(raise_exception=True)
+    data = serializer.validated_data
+
+    transfer_wallet(wallet , data['to_wallet'] , data['amount'])
+

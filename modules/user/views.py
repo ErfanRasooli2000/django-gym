@@ -1,18 +1,17 @@
-from rest_framework import generics, permissions
+from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-
+from rest_framework.permissions import IsAdminUser
 from modules.user.models import User
-from .permissions import CanCRUDUser
 from .serializers import UserRegisterSerializer
 
-class ListCreateApiView(generics.ListCreateAPIView):
+class ListCreateUserApiView(generics.ListCreateAPIView):
     authentication_classes = [SessionAuthentication , TokenAuthentication]
-    permission_classes = [CanCRUDUser]
+    permission_classes = [IsAdminUser]
     queryset = User.objects.select_related("wallet").all()
     serializer_class = UserRegisterSerializer
 
-class RetrieveUpdateDestroyApiView(generics.RetrieveUpdateDestroyAPIView):
+class RetrieveUpdateDestroyUserApiView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [SessionAuthentication , TokenAuthentication]
-    permission_classes = [CanCRUDUser]
+    permission_classes = [IsAdminUser]
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer

@@ -1,6 +1,6 @@
 from .services import register_user
 from rest_framework import serializers
-from modules.wallet.serializer import WalletSerializer
+from modules.wallet.serializers import WalletSerializer
 from .models import User
 
 
