@@ -1,5 +1,15 @@
 from django.contrib import admin
-from .models import User
-# Register your models here.
+from django.contrib.auth.admin import UserAdmin
 
-admin.site.register(User)
+from .models import User
+
+
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+    fieldsets = UserAdmin.fieldsets + (
+        ("Gym profile", {"fields": ("phone_number", "gender", "birth_date", "wallet")}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        ("Gym profile", {"fields": ("phone_number", "gender", "birth_date")}),
+    )
+    list_display = ("username", "phone_number", "email", "is_staff")
