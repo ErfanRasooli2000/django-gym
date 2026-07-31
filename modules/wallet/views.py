@@ -48,5 +48,8 @@ def transfer(request):
     serializer.is_valid(raise_exception=True)
     data = serializer.validated_data
 
-    transfer_wallet(wallet , data['to_wallet'] , data['amount'])
+    if transfer_wallet(wallet , data['to_wallet'] , data['amount'] , data['idempotency_key']) is None:
+        return Response({"message": "Transfer Success"}, status=status.HTTP_201_CREATED)
+
+    return Response({"message": "Transfer Failed"}, status=status.HTTP_400_BAD_REQUEST)
 

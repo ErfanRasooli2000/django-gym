@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Wallet, Transaction
+from .models import Wallet, Transaction, TransactionIdempotencyKey
 
 
 class WalletSerializer(serializers.ModelSerializer):
@@ -22,6 +22,7 @@ class WalletTransactionSerializer(serializers.ModelSerializer):
             "amount",
             "category",
             "type",
+            "idempotency",
             "balance_before",
             "balance_after",
             "created_at",
@@ -33,6 +34,7 @@ class WalletTransactionSerializer(serializers.ModelSerializer):
 
 class TransferSerializer(serializers.Serializer):
     to_wallet = serializers.PrimaryKeyRelatedField(queryset=Wallet.objects.all())
+    idempotency_key = serializers.CharField(max_length=100)
     amount = serializers.IntegerField(min_value=1)
 
     def validate(self, data):
