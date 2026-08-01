@@ -2,15 +2,27 @@ from .enums import TransactionCategory , TransactionType
 from django.db import models
 
 class Wallet(models.Model):
-    balance = models.BigIntegerField(default=0)
+    balance = models.PositiveBigIntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
 
 
 class TransactionIdempotencyKey(models.Model):
+    wallet = models.ForeignKey(Wallet, on_delete=models.PROTECT, related_name="wallet")
     idempotency_key = models.CharField(max_length=100 , unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Transaction(models.Model):
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(amount__gt=0),
+                name="transaction_amount_gt_zero"
+            )
+        ]
+        indexes = [
+            models.Index(fields=["wallet" , "-id"])
+        ]
 
     wallet = models.ForeignKey(Wallet , on_delete=models.PROTECT , related_name="transactions")
     amount = models.BigIntegerField(default=0)
@@ -20,3 +32,5 @@ class Transaction(models.Model):
     balance_before = models.BigIntegerField(default=0)
     balance_after = models.BigIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    models.CheckConstraint(condition=models.Q(amount__gt=0) , name="transaction_amount_gt_zero")

@@ -11,3 +11,8 @@ class TransferFailed(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = "Transfer Failed."
     default_code = "transfer_failed"
+
+class ConflictIdempotencyKey(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_detail = "Idempotency key conflict."
+    DEFAULT_CODE = "conflict_idempotency_key"

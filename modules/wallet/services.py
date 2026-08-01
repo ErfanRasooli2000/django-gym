@@ -1,7 +1,7 @@
 from django.db import transaction, IntegrityError
 from .enums import TransactionCategory , TransactionType
 from modules.wallet.models import Wallet, Transaction
-from .exceptions import LowWalletBalance, TransferFailed
+from .exceptions import LowWalletBalance, TransferFailed, ConflictIdempotencyKey
 from .models import TransactionIdempotencyKey
 
 
@@ -11,7 +11,7 @@ def create_wallet():
 
 def transfer_wallet(from_wallet , to_wallet , amount , idempotency_key):
 
-    if check_idempotency_key_exists(idempotency_key):
+    if check_idempotency_key_exists(idempotency_key) is None:
         return None
 
     try:
@@ -24,13 +24,18 @@ def transfer_wallet(from_wallet , to_wallet , amount , idempotency_key):
 
             sender , receiver = locked[from_wallet.id], locked[to_wallet.id]
 
-            idempotency = TransactionIdempotencyKey.objects.create(idempotency_key=idempotency_key)
+            idempotency = TransactionIdempotencyKey.objects.create(idempotency_key=idempotency_key , wallet = sender)
             create_transaction(sender , amount , TransactionType.DEBIT , TransactionCategory.TRANSFER , idempotency)
             create_transaction(receiver , amount , TransactionType.CREDIT , TransactionCategory.TRANSFER , idempotency)
 
     except IntegrityError:
-        if check_idempotency_key_exists(idempotency_key):
-            return None
+        idempotencyKey = check_idempotency_key_exists(idempotency_key)
+        if idempotencyKey is not None:
+            if idempotencyKey.wallet.id == from_wallet.id:
+                return None
+            else:
+                raise ConflictIdempotencyKey()
+
         raise TransferFailed()
 
     return None
@@ -49,10 +54,10 @@ def create_transaction(wallet: Wallet , amount: int , transaction_type: Transact
         balance_after += amount
 
     wallet.balance = balance_after
-    wallet.save()
+    wallet.save(update_fields=['balance'])
 
     Transaction.objects.create(wallet = wallet , amount = amount , category = category , type= transaction_type , balance_before = balance_before , balance_after = balance_after , idempotency = idempotency)
 
 
 def check_idempotency_key_exists(key):
-    return TransactionIdempotencyKey.objects.filter(idempotency_key=key).exists()
+    return TransactionIdempotencyKey.objects.filter(idempotency_key=key).first()
