@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAdminUser
 from modules.user.models import User
-from .serializers import UserRegisterSerializer
+from modules.user.serializers import UserRegisterSerializer
 
 class ListCreateUserApiView(generics.ListCreateAPIView):
     authentication_classes = [SessionAuthentication , TokenAuthentication]

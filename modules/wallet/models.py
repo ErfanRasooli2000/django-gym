@@ -1,4 +1,4 @@
-from .enums import TransactionCategory , TransactionType
+from modules.wallet.enums import TransactionCategory , TransactionType
 from django.db import models
 
 class Wallet(models.Model):

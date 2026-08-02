@@ -1,7 +1,7 @@
 from django.db import transaction
 
 from modules.wallet.services import create_wallet
-from .models import User
+from modules.user.models import User
 
 def register_user(data , password):
     with transaction.atomic():

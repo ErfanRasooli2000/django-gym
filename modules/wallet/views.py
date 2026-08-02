@@ -3,8 +3,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import authentication_classes, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .serializers import WalletTransactionSerializer, TransferSerializer
-from .services import transfer_wallet
+from modules.wallet.serializers import WalletTransactionSerializer, TransferSerializer
+from modules.wallet.services import transfer_wallet
 
 @api_view(["GET"])
 @authentication_classes([TokenAuthentication])

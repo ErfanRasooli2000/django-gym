@@ -2,9 +2,9 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import SET_NULL
 
-from .enums import Gender
-from .validators import iranian_mobile_validator
-from ..wallet.models import Wallet
+from modules.user.enums import Gender
+from modules.user.validators import iranian_mobile_validator
+from modules.wallet.models import Wallet
 
 
 # Create your models here.
