@@ -1,0 +1,7 @@
+# Development dependencies — type stubs, tooling.
+# Install with: pip install -r requirements-dev.txt
+
+-r requirements.txt
+
+django-stubs==6.0.7
+djangorestframework-stubs==3.17.0
