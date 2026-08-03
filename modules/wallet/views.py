@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from modules.wallet.serializers import WalletTransactionSerializer, TransferSerializer
 from modules.wallet.services import transfer_wallet
+from modules.wallet.pagination import TransactionCursorPagination
 
 @api_view(["GET"])
 @authentication_classes([TokenAuthentication])
@@ -28,10 +29,12 @@ def transactions(request):
     if wallet is None:
         return Response({"message": "User Wallet Not Found"}, status=status.HTTP_404_NOT_FOUND)
 
-    data = wallet.transactions.order_by("-created_at")
-    result = WalletTransactionSerializer(data, many=True).data
+    paginator = TransactionCursorPagination()
+    queryset = wallet.transactions.all()
+    page = paginator.paginate_queryset(queryset , request)
+    serializer = WalletTransactionSerializer(page, many=True)
 
-    return Response(result)
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["POST"])
