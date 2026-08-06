@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     # 'django-filters',
     'modules.user',
     'modules.wallet',
+    'modules.subscription',
+    'modules.organization',
+    'modules.invoice',
 ]
 
 MIDDLEWARE = [
