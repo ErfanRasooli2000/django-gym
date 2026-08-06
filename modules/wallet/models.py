@@ -1,13 +1,12 @@
+from modules.common.constraints import greater_than_zero_constraint
 from modules.wallet.enums import TransactionCategory , TransactionType
 from django.db import models
 
 class Wallet(models.Model):
     class Meta:
+        db_table = 'wallets'
         constraints = [
-            models.CheckConstraint(
-                condition=models.Q(balance__gte=0),
-                name="wallet_balance_amount_gte_zero"
-            )
+            greater_than_zero_constraint(field_name="balance"),
         ]
 
     balance = models.PositiveBigIntegerField(default=0)
@@ -17,6 +16,7 @@ class Wallet(models.Model):
 class TransactionIdempotencyKey(models.Model):
 
     class Meta:
+        db_table = 'wallet_transaction_idempotency_key'
         indexes = [
             models.Index(fields=["wallet"] , name="wallet_index"),
         ]
@@ -28,11 +28,9 @@ class TransactionIdempotencyKey(models.Model):
 class Transaction(models.Model):
 
     class Meta:
+        db_table = 'wallet_transactions'
         constraints = [
-            models.CheckConstraint(
-                condition=models.Q(amount__gt=0),
-                name="transaction_amount_gt_zero"
-            )
+            greater_than_zero_constraint("amount"),
         ]
         indexes = [
             models.Index(fields=["wallet" , "-id"])

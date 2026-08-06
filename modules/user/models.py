@@ -9,6 +9,10 @@ from modules.wallet.models import Wallet
 
 # Create your models here.
 class User(AbstractUser):
+
+    class Meta:
+        db_table = 'users'
+
     REQUIRED_FIELDS = ["phone_number" , "email"]
 
     first_name = models.CharField(max_length = 30 , null = False)

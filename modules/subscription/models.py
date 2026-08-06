@@ -1,17 +1,15 @@
-from email.policy import default
-
 from django.db import models
 from django.db.models import F
 from django.utils import timezone
-
 from modules.subscription.enums import SubscriptionType, SubscriptionStatus
 from modules.user.models import User
 from modules.invoice.models import Invoice
 from modules.organization.models import Organization
 
-# Create your models here.
-class Subscription(models.Model):
+
+class UserSubscription(models.Model):
     class Meta:
+        db_table = 'user_subscriptions'
         indexes = [
             models.Index(fields=["user_id" , "organization_id" , "status"])
         ]
@@ -26,7 +24,7 @@ class Subscription(models.Model):
             )
         ]
 
-    organization = models.ForeignKey(Organization , related_name="subscriptions", on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization , related_name="user_subscriptions", on_delete=models.CASCADE)
     invoice = models.ForeignKey(Invoice , related_name="subscription" , on_delete=models.CASCADE)
     user = models.ForeignKey(User , related_name="subscriptions", on_delete=models.PROTECT)
     type = models.CharField(choices=SubscriptionType.choices , null=False, blank=False , max_length=10)
