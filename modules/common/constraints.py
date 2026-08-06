@@ -7,6 +7,12 @@ def greater_than_zero_constraint(field_name : str):
             name=f"%(app_label)s_%(class)s_" + field_name + "_greater_than_zero",
         )
 
+def positive_constraint(field_name : str):
+    return models.CheckConstraint(
+            condition=models.Q(**{f"{field_name}__gte" : 0}),
+            name=f"%(app_label)s_%(class)s_" + field_name + "_greater_than_zero",
+        )
+
 def should_be_unique_constraint(field_name : str):
     return models.UniqueConstraint(
         fields=[field_name],

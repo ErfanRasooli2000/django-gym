@@ -32,7 +32,7 @@ class InvoiceProducts(models.Model):
     product = models.ForeignKey(OrganizationProduct , on_delete=models.CASCADE)
     invoice = models.ForeignKey(Invoice , on_delete=models.CASCADE)
     count = models.SmallIntegerField(default=1 , null=False, blank=False)
-    price = models.IntegerField(default=0 , null=False , blank=False)
+    price = models.IntegerField(null=False , blank=False)
 
 
 class InvoiceSubscription(models.Model):
@@ -45,4 +45,4 @@ class InvoiceSubscription(models.Model):
 
     subscription = models.ForeignKey(OrganizationSubscription , on_delete=models.CASCADE)
     invoice = models.ForeignKey(Invoice , on_delete=models.CASCADE)
-    price = models.IntegerField(default=0 , null=False , blank=False)
+    price = models.IntegerField(null=False , blank=False)

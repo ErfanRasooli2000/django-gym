@@ -26,7 +26,7 @@ class OrganizationSubscription(models.Model):
         ]
 
     name = models.CharField(max_length=100, null=False , blank=False)
-    price = models.IntegerField(default=0)
+    price = models.IntegerField()
     type = models.CharField(choices = SubscriptionType.choices ,max_length=10)
     usage_limit = models.IntegerField(null=True , blank=True)
     organization = models.ForeignKey(Organization , related_name="subscriptions" , on_delete=models.CASCADE)
@@ -44,7 +44,7 @@ class OrganizationProduct(models.Model):
         ]
 
     name = models.CharField(max_length=100)
-    price = models.IntegerField(default=0)
+    price = models.IntegerField()
     organization = models.ForeignKey(Organization , related_name="products", on_delete=models.CASCADE)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
