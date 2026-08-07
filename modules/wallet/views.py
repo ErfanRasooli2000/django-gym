@@ -1,7 +1,8 @@
+from django.core.cache import cache
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import authentication_classes, api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from modules.wallet.serializers import WalletTransactionSerializer, TransferSerializer
 from modules.wallet.services import transfer_wallet
@@ -56,3 +57,9 @@ def transfer(request):
 
     return Response({"message": "Transfer Failed"}, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def test(request):
+    cache.set("mamad" , "akbar" , 100)
+    return Response({"message": "test"}, status=status.HTTP_200_OK)

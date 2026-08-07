@@ -35,6 +35,18 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
+  redis:
+    image: redis:alpine3.23
+    container_name: gym_redis
+    restart: unless-stopped
+    volumes:
+      - gym-redis:/data
+    ports:
+      - '${FORWARD_REDIS_PORT:-6378}:6379'
+    healthcheck:
+        test: ["CMD", "redis-cli", "ping"]
+        retries: 3
+        timeout: 5s
 volumes:
   mysql_data:
+  gym-redis:
