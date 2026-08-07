@@ -1,6 +1,6 @@
 from django.db import models
 
-from modules.common.constraints import greater_than_zero_constraint
+from modules.common.constraints import greater_than_zero_constraint , enum_constraint
 from modules.organization.models import Organization, OrganizationProduct , OrganizationSubscription
 from modules.user.models import User
 

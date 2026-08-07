@@ -1,3 +1,4 @@
+import os
 from datetime import date
 
 from django.contrib.auth import get_user_model
@@ -44,6 +45,13 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
+
+        app_mode = os.environ.get("APP_MODE")
+
+        if app_mode is not None and app_mode == "production":
+            print("Application is On Production")
+            return None
+
         password = options["password"]
         phone_numbers = [row[1] for row in SEED_USERS]
 

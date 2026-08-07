@@ -1,4 +1,4 @@
-from modules.common.constraints import positive_constraint
+from modules.common.constraints import positive_constraint , enum_constraint
 from modules.common.constraints import greater_than_zero_constraint
 from modules.wallet.enums import TransactionCategory , TransactionType
 from django.db import models
@@ -10,7 +10,7 @@ class Wallet(models.Model):
             positive_constraint(field_name="balance"),
         ]
 
-    balance = models.PositiveBigIntegerField(default=0)
+    balance = models.BigIntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
 
 
@@ -31,7 +31,11 @@ class Transaction(models.Model):
     class Meta:
         db_table = 'wallet_transactions'
         constraints = [
-            greater_than_zero_constraint("amount"),
+            greater_than_zero_constraint(field_name="amount"),
+            positive_constraint(field_name="balance_after"),
+            positive_constraint(field_name="balance_before"),
+            enum_constraint(field_name="category" , types=TransactionCategory),
+            enum_constraint(field_name="type" , types=TransactionType),
         ]
         indexes = [
             models.Index(fields=["wallet" , "-id"])
@@ -39,8 +43,8 @@ class Transaction(models.Model):
 
     wallet = models.ForeignKey(Wallet , on_delete=models.PROTECT , related_name="transactions")
     amount = models.IntegerField()
-    category = models.CharField(choices=TransactionCategory.choices , max_length=15)
-    type = models.CharField(choices=TransactionType.choices , max_length=15)
+    category = models.CharField(choices=TransactionCategory , max_length=15)
+    type = models.CharField(choices=TransactionType , max_length=15)
     idempotency = models.ForeignKey(TransactionIdempotencyKey , related_name="transactions" ,  on_delete=models.PROTECT, null=True)
     balance_before = models.IntegerField(default=0)
     balance_after = models.IntegerField(default=0)

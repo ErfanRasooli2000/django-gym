@@ -1,3 +1,4 @@
+import os
 import random
 from datetime import timedelta
 
@@ -68,6 +69,13 @@ class Command(BaseCommand):
 
     @db_transaction.atomic
     def handle(self, *args, **options):
+
+        app_mode = os.environ.get("APP_MODE")
+
+        if app_mode is not None and app_mode == "production":
+            print("Application is On Production")
+            return None
+
         if options["seed"] is not None:
             random.seed(options["seed"])
 

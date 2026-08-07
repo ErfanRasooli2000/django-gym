@@ -1,5 +1,6 @@
 from django.db import models
 
+from modules.common.constraints import enum_constraint
 from modules.common.constraints import should_be_unique_constraint, greater_than_zero_constraint
 from modules.subscription.enums import SubscriptionType
 
@@ -23,11 +24,12 @@ class OrganizationSubscription(models.Model):
         constraints = [
             greater_than_zero_constraint(field_name="price"),
             should_be_unique_constraint(field_name="name"),
+            enum_constraint(field_name="type" , types=SubscriptionType),
         ]
 
     name = models.CharField(max_length=100, null=False , blank=False)
     price = models.IntegerField()
-    type = models.CharField(choices = SubscriptionType.choices ,max_length=10)
+    type = models.CharField(choices = SubscriptionType ,max_length=10)
     usage_limit = models.IntegerField(null=True , blank=True)
     organization = models.ForeignKey(Organization , related_name="subscriptions" , on_delete=models.CASCADE)
     updated_at = models.DateTimeField(auto_now=True)
